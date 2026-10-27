@@ -30,7 +30,7 @@ jobs:
           cd vdpm
           ./bootstrap-vitasdk.sh
           export PATH="$VITASDK/bin:$PATH"
-          "$VITASDK/bin/vdpm" install zlib bzip2 libpng libjpeg-turbo freetype harfbuzz libvita2d openssl curl expat opus mbedtls
+          yes | "$VITASDK/bin/vdpm" install zlib bzip2 libpng libjpeg-turbo freetype harfbuzz libvita2d openssl curl expat opus mbedtls
           echo "$VITASDK/bin" >> $GITHUB_PATH
 
       - name: Build
