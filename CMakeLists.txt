@@ -34,7 +34,7 @@ add_definitions(-DVERSION_MAJOR=${VERSION_MAJOR})
 add_definitions(-DVERSION_MINOR=${VERSION_MINOR})
 add_definitions(-DVERSION_PATCH=${VERSION_PATCH})
 
-set(CMAKE_C_FLAGS "-Wl,-q -g -std=c99 -D__vita__ -D_GNU_SOURCE")
+set(CMAKE_C_FLAGS "-Wl,-q -g -std=c99 -D__vita__ -D_GNU_SOURCE -Wno-error=implicit-function-declaration -Wno-error=int-conversion")
 
 
 
