@@ -58,6 +58,7 @@ enum {
   HOST_MANAGE_DELETE,
   HOST_MANAGE_CHANGE_IP,
   HOST_MANAGE_CHANGE_NAME,
+  HOST_MANAGE_CHANGE_PORT,
   HOST_MANAGE_FORCE_CONNECT,
   HOST_MANAGE_BACK
 };
@@ -209,6 +210,25 @@ static int ui_host_manage_menu_loop(int cursor, void *context, const input_data 
       }
       return 1;
     }
+    case HOST_MANAGE_CHANGE_PORT: {
+      vita_debug_log("[UI] Menú gestión: cambiar puerto %s", info->name);
+      char cur[16];
+      snprintf(cur, sizeof(cur), "%d", info->port ? info->port : 47989);
+      char new_port[16] = "";
+      if (ime_dialog_number(new_port, "Enter new Port:", cur) == 0) {
+        int p = atoi(new_port);
+        if (p > 0 && p <= 65535) {
+          info->port = (uint16_t)p;
+          save_device_info(info);
+          flash_message("Port updated: %d", p);
+        } else {
+          flash_message("Invalid port");
+        }
+      } else {
+        flash_message("Port change cancelled");
+      }
+      return 1;
+    }
     case HOST_MANAGE_FORCE_CONNECT:
       vita_debug_log("[UI] Menú gestión: conexión forzada a %s", info->name);
       stop_host_scan();
@@ -273,8 +293,9 @@ void ui_host_manage_menu(device_info_t *info) {
   menu[idx++] = (menu_entry){ .name = "Delete", .id = HOST_MANAGE_DELETE };
   menu[idx++] = (menu_entry){ .name = "Change IP", .id = HOST_MANAGE_CHANGE_IP };
   menu[idx++] = (menu_entry){ .name = "Change Name", .id = HOST_MANAGE_CHANGE_NAME };
+  menu[idx++] = (menu_entry){ .name = "Change Port", .id = HOST_MANAGE_CHANGE_PORT };
   menu[idx++] = (menu_entry){ .name = "Back", .id = HOST_MANAGE_BACK };
-  menu_geom geom = make_geom_centered(600, 320);
+  menu_geom geom = make_geom_centered(600, 345);
   display_menu(menu, idx, &geom, &ui_host_manage_menu_loop, &ui_host_manage_menu_back, NULL, info);
 }
 

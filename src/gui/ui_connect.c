@@ -489,10 +489,32 @@ void ui_connect_manual() {
   if (ime_dialog_string(info.name, "Enter Name:", "") != 0) {
     return;
   }
-  if (ime_dialog_string(info.internal, "Enter IP or Address:", "") != 0) {
+  if (ime_dialog_string(info.internal, "Enter IP or Address (ip:port accepted):", "") != 0) {
     return;
   }
-  info.port = 47989;
+
+  // Accept "host:port" (only when there is exactly one ':' so IPv6 is left untouched)
+  info.port = 0;
+  char *colon = strchr(info.internal, ':');
+  if (colon != NULL && strchr(colon + 1, ':') == NULL) {
+    int p = atoi(colon + 1);
+    if (p > 0 && p <= 65535) {
+      info.port = (uint16_t)p;
+    }
+    *colon = '\0';
+  }
+
+  // Otherwise ask for the port (default Sunshine/GFE HTTP port)
+  if (info.port == 0) {
+    char port_text[16] = "";
+    if (ime_dialog_number(port_text, "Enter Port (default 47989):", "47989") != 0) {
+      return;
+    }
+    int p = atoi(port_text);
+    info.port = (p > 0 && p <= 65535) ? (uint16_t)p : 47989;
+  }
+
+  strncpy(info.external, info.internal, sizeof(info.external) - 1);
   ui_connect_and_pairing(&info);
 }
 
