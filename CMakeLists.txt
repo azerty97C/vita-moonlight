@@ -146,7 +146,7 @@ add_executable(${PROJECT_NAME}.elf
 # Por defecto, solo enlazamos curl y el resto de libs estándar:
 target_link_libraries(${PROJECT_NAME}.elf
 	-lexpat
-	-lcurl
+	-lcurl -lzstd
 	moonlight-common-c
 	enet
 	h264bitstream
